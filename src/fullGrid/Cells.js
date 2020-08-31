@@ -89,6 +89,7 @@ function Cells(){
         e.preventDefault()
         setGrid(newGrid)
         setCycles(0)
+        setSpeed(1000)
     }
 
     function arrCopy(arr){
@@ -112,18 +113,18 @@ function Cells(){
     }
 
     const increaseSpeed = () => {
-        setSpeed(speed + 250)
+        setSpeed(speed / 2)
     }
 
     const decreaseSpeed = () => {
-        setSpeed(speed - 250)
+        setSpeed(speed * 2)
     }
 
 
     return(
         <div>
             <h4>Generation Number: {cycles}</h4>
-            
+            <h4>Generation Speed (in ms): {speed}</h4>
             {/* This div contains the code that renders the grid on the screen and will show selected cells */}
             <div 
                 id = "game-grid"
