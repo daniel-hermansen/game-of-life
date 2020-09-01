@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import Game from './fullGrid/Game';
 import './App.css';
