@@ -3,10 +3,10 @@ import React, { useState, useCallback, useRef } from "react";
 import produce from 'immer';
 
 
-function Cells(){
+function Grid(){
     let [cycles, setCycles] = useState(0)
-    const [numberOfRows, setNumberOfRows] = useState(25);
-    const [numberOfColumns, setNumberOfColumns] = useState(25);
+    const [numberOfRows, setNumberOfRows] = useState(50);
+    const [numberOfColumns, setNumberOfColumns] = useState(50);
     const [operating, setOperating] = useState(false)
     const operations = [
         [0,1],
@@ -42,11 +42,7 @@ function Cells(){
         if (!operatingRef.current){
             return;
         }
-        if(`${cycles}` == 0){
-            setCycles(0)
-        } else {
-            setCycles(`${cycles}`)
-        }
+
         setGrid((g) => {
             return produce(g, gridCopy => {
             for (let i = 0; i< numberOfRows; i++){
@@ -66,23 +62,23 @@ function Cells(){
                     }
                 }
             }   
-                setCycles((cycles++/2)+0.5)
+                setCycles((cycles++ /2) + .5)
             })           
         })
 
 
         setTimeout(startGame, speed)
         
-    }, [])
+    }, [cycles, numberOfColumns, numberOfRows, operations, speed])
 
-    const changeDimensions = () =>{
-        if (numberOfColumns == 25 && numberOfRows == 25) {
-            setNumberOfColumns(`${numberOfColumns}`* 2)
-            setNumberOfRows(`${numberOfRows}` * 2)
-        } else {
-            setNumberOfColumns(25)
-            setNumberOfRows(25)
-        }
+    const expandGrid = () =>{
+        setNumberOfColumns(`${numberOfColumns}` + 5)
+        setNumberOfRows(`${numberOfRows}` + 5)
+    }
+
+    const shrinkGrid = () =>{
+        setNumberOfColumns(`${numberOfColumns}` - 5)
+        setNumberOfRows(`${numberOfRows}` - 5)
     }
 
     const clear = (e) => {
@@ -125,6 +121,61 @@ function Cells(){
         <div>
             <h4>Generation Number: {cycles}</h4>
             <h4>Generation Speed (in ms): {speed}</h4>
+            
+            <div class = "button-div">
+                
+                {/* This button is here to start the game of lif */}
+                <button
+                    onClick={ () => {
+                        setOperating(!operating);
+                        operatingRef.current = true;
+                        startGame()}
+                    }
+                >
+                Start
+                </button>
+
+                {/* This button exists in order to sop the Game of Life */}
+                <button
+                    onClick={ () => 
+                        {setOperating(!operating);
+                        operatingRef.current = false;
+                        startGame()}
+                    }
+                >
+                Stop
+                </button>
+
+                {/* This button is here to give the user the ability to manually proceed to the next gen of cells */}
+                <button
+                    onClick={ () => {
+                        setOperating(operating);
+                        operatingRef.current = true;
+                        startGame()
+                    }}
+                >
+                Next Generation
+                </button>
+
+                {/* This button is here to clear all cells from the grid */}
+                <button onClick={clear}>Clear Grid</button>
+
+                {/* This button is here to populate the grid with a random seletion of cells */}
+                <button type='submit' onClick={seed}>Randomize Cells</button>
+                
+                {/* This button is here to increase the size of the grid */}
+                <button onClick={expandGrid}>Expand Grid</button>
+
+                {/* This button is here to increase the size of the grid */}
+                <button onClick={shrinkGrid}>Shrink Grid</button>
+                
+                {/* This button will accelerate the speed of generations */}
+                <button onClick = {increaseSpeed}>Accelerate</button>
+
+                {/* This button will decelerate the speed of generations */}
+                <button onClick = {decreaseSpeed}>Decelerate</button>
+            </div>
+            
             {/* This div contains the code that renders the grid on the screen and will show selected cells */}
             <div 
                 id = "game-grid"
@@ -150,65 +201,9 @@ function Cells(){
                 )}
             </div>
 
-            <div class = "button-div">
-                
-                {/* This button is here to clear all cells from the grid */}
-                <button onClick={clear}>Clear Grid</button>
-                
-                {/* This button is here to double the size of the grid */}
-                <button onClick={changeDimensions}>{ numberOfRows == 25 ? `Double Grid Size` : `Shrink Grid`}</button>
-                
-                {/* This button is here to populate the grid with a random seletion of cells */}
-                <button type='submit' onClick={seed}>Randomize Cells</button>
-                
-                {/* This button is here to start the game of lif */}
-                <button
-                    onClick={ () => {
-                        setOperating(!operating);
-                        operatingRef.current = true;
-                        startGame()}
-                    }
-                >
-                    Start
-                </button>
-                
-                {/* This button exists in order to sop the Game of Life */}
-                <button
-                    onClick={ () => 
-                        {setOperating(!operating);
-                        operatingRef.current = false;
-                        startGame()}
-                    }
-                >
-                    Stop
-                </button>
-                
-                {/* This button is here to give the user the ability to manually proceed to the next gen of cells */}
-                <button
-                    onClick={ () => {
-                        setOperating(operating);
-                        operatingRef.current = true;
-                        startGame()
-                    }}
-                >
-                    Next Generation
-                </button>
 
-                <button
-                    onClick = {increaseSpeed}
-                >
-                    Accelerate
-                </button>
-
-
-                <button
-                    onClick = {decreaseSpeed}
-                >
-                    Decelerate
-                </button>
-            </div>
         </div>
     )
 }
 
-export default Cells
+export default Grid;
